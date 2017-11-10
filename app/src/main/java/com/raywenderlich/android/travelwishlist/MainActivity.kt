@@ -1,12 +1,13 @@
 package com.raywenderlich.android.travelwishlist
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -18,7 +19,7 @@ class MainActivity : AppCompatActivity() {
 
     private val onItemClickListener = object : TravelListAdapter.OnItemClickListener {
         override fun onItemClick(view: View, position: Int) {
-            Toast.makeText(this@MainActivity, "Clicked " + position, Toast.LENGTH_SHORT).show()
+            startActivity(showDetailActivity(this@MainActivity, position))
         }
     }
 
@@ -81,5 +82,11 @@ class MainActivity : AppCompatActivity() {
         item.setIcon(R.drawable.ic_action_list)
         item.title = getString(R.string.show_as_list)
         isListView = false
+    }
+
+    fun showDetailActivity(context: Context, position: Int): Intent {
+        val intent = Intent(context, DetailActivity::class.java)
+        intent.putExtra(DetailActivity.EXTRA_PARAM_ID, position)
+        return intent
     }
 }
