@@ -11,6 +11,8 @@ import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import com.raywenderlich.android.travelwishlist.model.Place
+import com.raywenderlich.android.travelwishlist.model.PlaceData
 import java.util.ArrayList
 import kotlinx.android.synthetic.main.activity_detail.*
 
