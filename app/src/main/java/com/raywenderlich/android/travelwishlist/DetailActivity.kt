@@ -1,5 +1,7 @@
 package com.raywenderlich.android.travelwishlist
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -8,6 +10,7 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.view.View
+import android.view.ViewAnimationUtils
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.inputmethod.InputMethodManager
@@ -98,11 +101,28 @@ class DetailActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun revealEditText(view: LinearLayout) {
-
+        val cx = view.right - 30
+        val cy = view.bottom - 60
+        val finalRadius = Math.max(view.width, view.height)
+        val anim = ViewAnimationUtils.createCircularReveal(view, cx, cy, 0f, finalRadius.toFloat())
+        view.visibility = View.VISIBLE
+        isEditTextVisible = true
+        anim.start()
     }
 
     private fun hideEditText(view: LinearLayout) {
-
+        val cx = view.right - 30
+        val cy = view.bottom - 60
+        val initialRadius = view.width
+        val anim = ViewAnimationUtils.createCircularReveal(view, cx, cy, initialRadius.toFloat(), 0f)
+        anim.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                super.onAnimationEnd(animation)
+                view.visibility = View.INVISIBLE
+            }
+        })
+        isEditTextVisible = false
+        anim.start()
     }
 
     override fun onBackPressed() {
