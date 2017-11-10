@@ -1,6 +1,9 @@
 package com.raywenderlich.android.travelwishlist
 
 import android.content.Context
+import android.graphics.BitmapFactory
+import android.support.v4.content.ContextCompat
+import android.support.v7.graphics.Palette
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -25,6 +28,12 @@ class TravelListAdapter(private var context: Context) : RecyclerView.Adapter<Tra
         val place = PlaceData.placeList()[position]
         holder?.itemView?.placeName?.text = place.name
         Picasso.with(context).load(place.getImageResourceId(context)).into(holder?.itemView?.placeImage)
+
+        val photo = BitmapFactory.decodeResource(context.resources, place.getImageResourceId(context))
+        Palette.from(photo).generate { palette ->
+            val bgColor = palette.getMutedColor(ContextCompat.getColor(context, android.R.color.black))
+            holder?.itemView?.placeNameHolder?.setBackgroundColor(bgColor)
+        }
     }
 
 
