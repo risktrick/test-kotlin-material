@@ -27,11 +27,13 @@ class TravelListAdapter(private var context: Context) : RecyclerView.Adapter<Tra
     override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
         val place = PlaceData.placeList()[position]
         holder?.itemView?.placeName?.text = place.name
-        Picasso.with(context).load(place.getImageResourceId(context)).into(holder?.itemView?.placeImage)
+        val imageId = place.getImageResourceId(context)
 
-        val photo = BitmapFactory.decodeResource(context.resources, place.getImageResourceId(context))
-        Palette.from(photo).generate { palette ->
-            val bgColor = palette.getMutedColor(ContextCompat.getColor(context, android.R.color.black))
+        Picasso.with(context).load(imageId).into(holder?.itemView?.placeImage)
+
+        val bitmap = BitmapFactory.decodeResource(context.resources, imageId)
+        Palette.from(bitmap).generate { palette ->
+            val bgColor = palette.getDarkMutedColor(ContextCompat.getColor(context, android.R.color.black))
             holder?.itemView?.placeNameHolder?.setBackgroundColor(bgColor)
         }
     }
