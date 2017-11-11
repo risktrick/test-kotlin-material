@@ -3,12 +3,17 @@ package com.raywenderlich.android.travelwishlist
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.app.ActivityCompat
+import android.support.v4.app.ActivityOptionsCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.ImageView
+import android.widget.LinearLayout
 import kotlinx.android.synthetic.main.activity_main.*
+import android.support.v4.util.Pair
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,8 +24,24 @@ class MainActivity : AppCompatActivity() {
 
     private val onItemClickListener = object : TravelListAdapter.OnItemClickListener {
         override fun onItemClick(view: View, position: Int) {
-            startActivity(showDetailActivity(this@MainActivity, position))
+
+            var intent = getDetailActivityIntent(this@MainActivity, position)
+
+            // 1
+            val placeImage = view.findViewById<ImageView>(R.id.placeImage)
+            val placeNameHolder = view.findViewById<LinearLayout>(R.id.placeNameHolder)
+
+            // 2
+            val imagePair = Pair.create(placeImage as View, "tImage")
+            val holderPair = Pair.create(placeNameHolder as View, "tNameHolder")
+
+            // 3
+            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this@MainActivity,
+                    imagePair,
+                    holderPair)
+            ActivityCompat.startActivity(this@MainActivity, intent, options.toBundle())
         }
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -84,7 +105,7 @@ class MainActivity : AppCompatActivity() {
         isListView = false
     }
 
-    fun showDetailActivity(context: Context, position: Int): Intent {
+    fun getDetailActivityIntent(context: Context, position: Int): Intent {
         val intent = Intent(context, DetailActivity::class.java)
         intent.putExtra(DetailActivity.EXTRA_PARAM_ID, position)
         return intent
