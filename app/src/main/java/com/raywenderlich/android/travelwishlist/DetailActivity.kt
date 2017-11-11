@@ -6,9 +6,12 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.drawable.Animatable
+import android.graphics.drawable.ColorDrawable
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
+import android.support.v7.graphics.Palette
 import android.view.View
 import android.view.ViewAnimationUtils
 import android.view.animation.AlphaAnimation
@@ -75,12 +78,18 @@ class DetailActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun getPhoto() {
         val photo = BitmapFactory.decodeResource(resources, place.getImageResourceId(this))
+        colorize(photo)
     }
 
-    private fun colorize(photo: Bitmap) {}
+    private fun colorize(photo: Bitmap) {
+        val palette = Palette.from(photo).generate()
+        applyPalette(palette)
+    }
 
-    private fun applyPalette() {
-
+    private fun applyPalette(palette: Palette) {
+        window.setBackgroundDrawable(ColorDrawable(palette.getDarkMutedColor(defaultColor)))
+        placeNameHolder.setBackgroundColor(palette.getMutedColor(defaultColor))
+        revealView.setBackgroundColor(palette.getLightVibrantColor(defaultColor))
     }
 
     override fun onClick(v: View) {
@@ -88,7 +97,11 @@ class DetailActivity : AppCompatActivity(), View.OnClickListener {
             R.id.addButton -> if (!isEditTextVisible) {
                 revealEditText(revealView)
                 todoText.requestFocus()
-                inputManager.showSoftInput(todoText, InputMethodManager.SHOW_IMPLICIT)
+//                inputManager.showSoftInput(todoText, InputMethodManager.SHOW_IMPLICIT)
+
+                addButton.setImageResource(R.drawable.icn_morph)
+                val animatable = addButton.drawable as Animatable
+                animatable.start()
 
             } else {
                 addToDo(todoText.text.toString())
@@ -96,6 +109,9 @@ class DetailActivity : AppCompatActivity(), View.OnClickListener {
                 inputManager.hideSoftInputFromWindow(todoText.windowToken, 0)
                 hideEditText(revealView)
 
+                addButton.setImageResource(R.drawable.icn_morph_revers)
+                val animatable = addButton.drawable as Animatable
+                animatable.start()
             }
         }
     }
