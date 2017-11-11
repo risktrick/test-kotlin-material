@@ -14,6 +14,8 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import kotlinx.android.synthetic.main.activity_main.*
 import android.support.v4.util.Pair
+import android.view.Window
+import kotlinx.android.synthetic.main.toolbar.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -31,14 +33,24 @@ class MainActivity : AppCompatActivity() {
             val placeImage = view.findViewById<ImageView>(R.id.placeImage)
             val placeNameHolder = view.findViewById<LinearLayout>(R.id.placeNameHolder)
 
+
+            val navigationBar = findViewById<View>(android.R.id.navigationBarBackground)
+            val statusBar = findViewById<View>(android.R.id.statusBarBackground)
+
             // 2
             val imagePair = Pair.create(placeImage as View, "tImage")
             val holderPair = Pair.create(placeNameHolder as View, "tNameHolder")
 
-            // 3
-            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this@MainActivity,
-                    imagePair,
-                    holderPair)
+            val navPair = Pair.create(navigationBar, Window.NAVIGATION_BAR_BACKGROUND_TRANSITION_NAME)
+            val statusPair = Pair.create(statusBar, Window.STATUS_BAR_BACKGROUND_TRANSITION_NAME)
+            val toolbarPair = Pair.create(toolbar as View, "tActionBar")
+
+            val pairs = mutableListOf(imagePair, holderPair, statusPair, toolbarPair)
+            if (navigationBar != null && navPair != null) {
+                pairs += navPair
+            }
+
+            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this@MainActivity, *pairs.toTypedArray())
             ActivityCompat.startActivity(this@MainActivity, intent, options.toBundle())
         }
 
@@ -57,10 +69,15 @@ class MainActivity : AppCompatActivity() {
         recyclerView.adapter = adapter
 
         adapter.setOnItemClickListener(onItemClickListener)
+
+        setUpActionBar()
     }
 
     private fun setUpActionBar() {
-
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        supportActionBar?.setDisplayShowTitleEnabled(true)
+        supportActionBar?.elevation = 7.0f
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
